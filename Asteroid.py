@@ -59,13 +59,28 @@ def main():
     pencolor((0,1,0))
     write('Vx = {}; Vy = {}'.format(rk.Vx,rk.Vy),font=('Arial',26,'normal'))
 
+    Exit = Turtle()
+    Exit.shape('square')
+    Exit.color('green','green')
+    Exit.pu()
+    Exit.shapesize(3)
+    Exit.goto(Szer/2,150)
+    
     ZU = []
     for i in range(10):
         ZU.append(Turtle('turtle'))
         ZU[-1].pu()
-        ZU[-1].goto(randint(-Szer/2+320,Szer/2-20),randint(-Wys/2+20,Wys/2-100))
+        Wolno = False
+        while  not Wolno:
+            ZU[-1].goto(randint(-Szer/2+320,Szer/2-20), randint(-Wys/2+20,Wys/2-100))
+            Wolno = True
+            for i in ZU[:-1]:
+                if ZU[-1].distance(i) <= (20*i.shapesize()[0] + 20*ZU[-1].shapesize()[0]):
+                    Wolno = False
+            
+        
         ZU[-1].fillcolor((random(),random(),random()))
-        ZU[-1].shapesize(randint(1,9))
+        ZU[-1].shapesize(randint(1,5))
         ZU[-1].o = randint(-5,5)
     rk.x = -500
     rk.y = -100
@@ -96,11 +111,14 @@ def main():
        for z in ZU:
            z.lt(z.o)
            z.shapesize()[0]
-           if z.distance(rk)<=5*z.shapesize()[0]:
+           if z.distance(rk)<= 20*z.shapesize()[0]:
                rk.Vx = 0
                rk.Vy = 0
                rk.x = -500
                rk.y = -100
+       if rk.distance(Exit) <= 30:
+            undo()
+            write('Nowy Poziom',font=('Arial',26,'normal'))
        undo()
        write('Vx = {:4.1f}; Vy = {:4.1f}'.format(rk.Vx,rk.Vy),font=('Arial',26,'normal'))
        update()
