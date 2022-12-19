@@ -35,6 +35,37 @@ onkeypress(right,'Right')
 listen()
 bgcolor('black')
 
+def losowanie(ZU,Szer,Wys):
+    if len(ZU) == 5:
+        
+        for j in range(5):
+            Wolno = False
+            while  not Wolno:
+                ZU[j].goto(randint(-Szer/2+320,Szer/2-20), randint(-Wys/2+20,Wys/2-100))
+                Wolno = True
+                for i in range(5):
+                    if i != j:
+                        if ZU[ i ].distance(ZU[ j ]) <= (20*ZU[j].shapesize()[0] + 20*ZU[i].shapesize()[0]):
+                            Wolno = False
+            ZU[j].fillcolor((random(),random(),random()))
+            ZU[j].shapesize(randint(1,5))
+            ZU[j].o = randint(-5,5)
+    else:
+        for i in range(5):
+            ZU.append(Turtle('turtle'))
+            ZU[-1].pu()
+            Wolno = False
+            while  not Wolno:
+                ZU[-1].goto(randint(-Szer/2+320,Szer/2-20), randint(-Wys/2+20,Wys/2-100))
+                Wolno = True
+                for i in ZU[:-1]:
+                    if ZU[-1].distance(i) <= (20*i.shapesize()[0] + 20*ZU[-1].shapesize()[0]):
+                        Wolno = False
+            ZU[-1].fillcolor((random(),random(),random()))
+            ZU[-1].shapesize(randint(1,5))
+            ZU[-1].o = randint(-5,5)
+    return ZU
+
 def main():
     Szer = 1200
     Wys = 600
@@ -67,24 +98,12 @@ def main():
     Exit.goto(Szer/2,150)
     
     ZU = []
-    for i in range(10):
-        ZU.append(Turtle('turtle'))
-        ZU[-1].pu()
-        Wolno = False
-        while  not Wolno:
-            ZU[-1].goto(randint(-Szer/2+320,Szer/2-20), randint(-Wys/2+20,Wys/2-100))
-            Wolno = True
-            for i in ZU[:-1]:
-                if ZU[-1].distance(i) <= (20*i.shapesize()[0] + 20*ZU[-1].shapesize()[0]):
-                    Wolno = False
-            
-        
-        ZU[-1].fillcolor((random(),random(),random()))
-        ZU[-1].shapesize(randint(1,5))
-        ZU[-1].o = randint(-5,5)
+    ZU = losowanie(ZU,Szer,Wys)
     rk.x = -500
     rk.y = -100
     
+    czas = 5.5 # sekundy na poziom
+
     GameOver = False
     while not GameOver:
        rk.Vx += rk.a*cos(rk.heading()*pi/180)
@@ -119,8 +138,20 @@ def main():
        if rk.distance(Exit) <= 30:
             undo()
             write('Nowy Poziom',font=('Arial',26,'normal'))
-       undo()
-       write('Vx = {:4.1f}; Vy = {:4.1f}'.format(rk.Vx,rk.Vy),font=('Arial',26,'normal'))
+       else:
+           undo()
+           write('Vx = {:4.1f}; Vy = {:4.1f}; czas: {:4.1f}'.format(rk.Vx,rk.Vy, czas),font=('Arial',26,'normal'))
        update()
        sleep(0.04)
+       czas = czas - 0.04
+       
+       if czas < 0 :
+            ZU = losowanie(ZU,Szer,Wys)
+            rk.x = -500
+            rk.y = -100
+            rk.Vx = 0
+            rk.Vy = 0
+            czas = 30.5 # sekundy na poziom
+
+       
 main()   
